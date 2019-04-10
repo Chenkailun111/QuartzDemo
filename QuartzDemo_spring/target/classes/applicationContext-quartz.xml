@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!-- quartz整合spring -->
+    <!--1,jobDetail
+    jobClass :类型是Class类型，需要使用value指定作业类
+	startDelay：指定开始延迟时间
+	st：指定重复时间（周期）
+	durability  保存调度器相关信息
+    -->
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.itqf.job.MyJob" ></property>
+        <property name="durability"  value="true"></property>
+        <property name="name" value="myJob1"></property>
+        <property name="group" value="myGroup1"></property>
+    </bean>
+
+    <!--2,配置触发器 trigger
+        SimpleTrigger
+        CronTrigger
+    -->
+    <bean id="myCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="name" value="myTrigger"></property>
+        <property name="group" value="myGroup"></property>
+        <property name="jobDetail" ref="jobDetail"></property>
+        <property name="cronExpression" value="0/5 * * * * ?"></property>
+    </bean>
+
+    <!-- 3,创建Sheduler对象 -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <array>
+               <ref bean="myCronTrigger"></ref>
+            </array>
+        </property>
+    </bean>
+
+</beans>        

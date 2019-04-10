@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--1,jobDetail-->
+    <bean id="myQuartzJob" class="com.itqf.job.MyQuartzJob"></bean>
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="myQuartzJob"></property>
+        <property name="targetMethod" value="execute"></property>
+    </bean>
+
+    <!--2 trigger-->
+    <bean id="mySimpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="name" value="myTrigger2"></property>
+        <property name="group" value="myGroup2"></property>
+        <property name="repeatInterval" value="5000"></property>
+        <property name="startDelay" value="1000"></property>
+        <property name="repeatCount" value="1000"></property>
+        <property name="jobDetail" ref="jobDetail"></property>
+    </bean>
+
+    <!--3,sheduler-->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <array>
+                <ref bean="mySimpleTrigger"></ref>
+            </array>
+        </property>
+
+    </bean>
+
+</beans>        
